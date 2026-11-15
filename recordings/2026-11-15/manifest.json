@@ -1,0 +1,40 @@
+{
+  "id": "2026-11-15",
+  "capture": {
+    "sample_rate": 16000,
+    "channels": 1,
+    "echo_cancellation": true,
+    "noise_suppression": false,
+    "auto_gain_control": true
+  },
+  "notes": "Takes talk-quiet and talk-over-tv: AirPods microphone. Take room-only: a different microphone, after the AirPods were put in their case.",
+  "clips": [
+    {
+      "index": 0,
+      "take": "talk-quiet",
+      "prompt": "Talk for a minute or two in a quiet room.",
+      "file": "01-talk-quiet.flac",
+      "seconds": 32.48,
+      "bytes": 549809,
+      "sha256": "65530a50ca54d94232c496fe276b9235225e6788c8730ec7f26578ed42e768dd"
+    },
+    {
+      "index": 1,
+      "take": "talk-over-tv",
+      "prompt": "Talk for a minute or two with the TV or music on.",
+      "file": "02-talk-over-tv.flac",
+      "seconds": 44.0,
+      "bytes": 863319,
+      "sha256": "2e9a51bb355b1f1237438a5273553851a38d5135def055189ad9c3046dda9d5e"
+    },
+    {
+      "index": 2,
+      "take": "room-only",
+      "prompt": "[Say nothing. Leave the TV or music playing.]",
+      "file": "03-room-only.flac",
+      "seconds": 60.0,
+      "bytes": 923082,
+      "sha256": "fa5972a637d4f0b4d44eedd762494156fa14974b60eab8bf24f7055de14ea8ba"
+    }
+  ]
+}
