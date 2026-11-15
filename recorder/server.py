@@ -41,6 +41,8 @@ def save_clip(directory, index, payload):
     if any(c["index"] == index for c in session["clips"]):
         return session  # a retry after a lost response never replaces a saved take
     pcm = np.frombuffer(payload, dtype="<i2")
+    if not pcm.any():
+        raise ValueError("The microphone delivered no audio; check which microphone the browser is using")
     path = directory / f"{index + 1:02d}-{take['id']}.flac"
     pending = path.with_suffix(".tmp.flac")
     sf.write(pending, pcm, RATE, format="FLAC", subtype="PCM_16")

@@ -37,6 +37,11 @@ class RecorderTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             server.save_clip(self.directory, 2, pcm(limit + 5).tobytes())
 
+    def test_a_take_from_a_dead_microphone_is_refused(self):
+        with self.assertRaises(ValueError):
+            server.save_clip(self.directory, 0, np.zeros(server.RATE * 5, dtype="<i2").tobytes())
+        self.assertEqual(json.loads((self.directory / "manifest.json").read_text())["clips"], [])
+
     def test_saving_again_keeps_the_first_take(self):
         first = server.save_clip(self.directory, 0, pcm(2).tobytes())
         again = server.save_clip(self.directory, 0, pcm(3).tobytes())

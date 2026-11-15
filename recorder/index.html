@@ -262,6 +262,7 @@
           );
           if (recording) frames.push(a);
         };
+        mic.getAudioTracks()[0].onended = micLost;
         $("micState").textContent = "Microphone ready";
       } catch (e) {
         await releaseMic();
@@ -378,6 +379,22 @@
       if (ctx && ctx.state !== "closed") await ctx.close();
       $("micState").textContent = "Microphone off";
       $("level").value = 0;
+    }
+    // The microphone went away (unplugged, or earbuds put back in their case).
+    async function micLost() {
+      const lost = recording;
+      recording = false;
+      clearTimeout(timer);
+      clearInterval(ticker);
+      frames = [];
+      $("record").classList.remove("recording");
+      await releaseMic();
+      if (lost) {
+        $("elapsed").textContent = "";
+        $("record").textContent = "● Record";
+        $("status").textContent = "";
+        $("error").textContent = "The microphone disconnected, so this take was not saved. Record again to use the current microphone.";
+      }
     }
     async function save() {
       $("record").textContent = "↻ Retry save";
