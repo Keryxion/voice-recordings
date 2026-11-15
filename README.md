@@ -48,6 +48,15 @@ Open `https://recorder.example.net:8792/?key=<key>` using the key in
 `work/recorder.token`. Every page and request needs the key or the cookie it
 sets, and requests are not logged.
 
+Behind a proxy that already serves HTTPS for the host name, leave out the
+certificate and listen only where the proxy connects:
+
+```sh
+.venv/bin/python recorder/server.py --public-host recorder.example.net --bind 172.17.0.1
+```
+
+Point the proxy at port 8792 and open `https://recorder.example.net/?key=<key>`.
+
 ## Use the recordings in tests
 
 Tests in other repositories read the files from a checkout of this one. Decode

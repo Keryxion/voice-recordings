@@ -105,14 +105,15 @@ def main():
     p.add_argument("--session", default=datetime.date.today().isoformat(),
                    help="Directory under recordings/; an existing session resumes (default: today's date)")
     p.add_argument("--notes", default="", help="Microphone/device, room, distance and background noise")
-    p.add_argument("--public-host", help="Serve HTTPS on the network under this host name (requires --cert/--key)")
+    p.add_argument("--public-host", help="Host name the recorder is opened under from other machines, over HTTPS")
     p.add_argument("--cert", type=Path, help="TLS certificate for --public-host")
     p.add_argument("--key", type=Path, help="TLS private key for --public-host")
+    p.add_argument("--bind", help="Address to listen on with --public-host (default: every address)")
     p.add_argument("--token-file", type=Path, default=ROOT / "work/recorder.token",
                    help="Persistent network access key (network mode only)")
     args = p.parse_args()
-    if bool(args.public_host) != bool(args.cert and args.key):
-        p.error("--public-host requires --cert and --key, and they require --public-host")
+    if bool(args.cert) != bool(args.key) or (args.cert or args.bind) and not args.public_host:
+        p.error("--cert and --key go together, and they and --bind require --public-host")
     if args.public_host:
         # Browsers only allow microphone capture from other machines over HTTPS.
         # Every request needs this key; the URL carrying it is the only access path.
@@ -125,7 +126,8 @@ def main():
         token = secrets.token_urlsafe(24)
     hosts = {f"127.0.0.1:{args.port}", f"localhost:{args.port}"}
     if args.public_host:
-        hosts.add(f"{args.public_host}:{args.port}")
+        # Without a certificate a proxy serves HTTPS on the standard port and forwards here.
+        hosts.add(f"{args.public_host}:{args.port}" if args.cert else args.public_host)
     directory = ROOT / "recordings" / args.session
     if directory.parent != ROOT / "recordings":
         p.error("--session is one directory name")
@@ -212,12 +214,15 @@ def main():
             except Exception as e:
                 return self.send({"error": str(e)}, 400)
 
-    server = ThreadingHTTPServer(("0.0.0.0" if args.public_host else "127.0.0.1", args.port), Handler)
-    if args.public_host:
+    address = (args.bind or "0.0.0.0") if args.public_host else "127.0.0.1"
+    server = ThreadingHTTPServer((address, args.port), Handler)
+    if args.cert:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(args.cert, args.key)
         server.socket = context.wrap_socket(server.socket, server_side=True)
         url = f"https://{args.public_host}:{args.port}/?key=<key> (access key in {args.token_file})"
+    elif args.public_host:
+        url = f"https://{args.public_host}/?key=<key> (access key in {args.token_file})"
     else:
         url = f"http://127.0.0.1:{args.port}"
     print(f"Open {url} — takes are saved in {directory}", flush=True)
