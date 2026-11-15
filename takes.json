@@ -1,0 +1,20 @@
+[
+  {
+    "id": "talk-quiet",
+    "text": "Talk for a minute or two in a quiet room.",
+    "instruction": "Talk the way you would to Arya; don't read. Think aloud, trail off, start again. Stop when you run out.",
+    "max_seconds": 180
+  },
+  {
+    "id": "talk-over-tv",
+    "text": "Talk for a minute or two with the TV or music on.",
+    "instruction": "Normal listening volume. Talk the same way as before.",
+    "max_seconds": 180
+  },
+  {
+    "id": "room-only",
+    "text": "[Say nothing. Leave the TV or music playing.]",
+    "instruction": "Stay silent and let the recorder stop by itself after 60 seconds.",
+    "max_seconds": 60
+  }
+]
