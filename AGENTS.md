@@ -10,3 +10,10 @@ and the recorder that makes them.
 - Do not edit, trim or re-encode a committed recording. Record a new session.
 - Tests in other repositories read these files from a local checkout. Keep
   take ids in `takes.json` stable once recordings use them.
+
+## Shared with other repos
+
+These files have copies or dependents in other Keryxion repositories; a change here also belongs there.
+
+- Recordings are read by take id in Keryxion/hermes-converse's tests and copied into Keryxion/wakeword-training `fixtures/recorded/`: a new session belongs there too.
+- `recorder/capture-worklet.js` is the same file as Keryxion/wakeword-training `comparison/capture-worklet.js`: both capture the same audio format, so a capture fix applies to both.
